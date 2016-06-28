@@ -1,4 +1,8 @@
+from sys import float_info
 from math import sqrt, sin, cos, radians, atan2, degrees
+
+
+epsilon = float_info.epsilon * 100
 
 
 class Vector2D:
@@ -90,22 +94,27 @@ class Vector2D:
     def __iadd__(self, other):
         self.x += other.x
         self.y += other.y
+        return self
 
     def __isub__(self, other):
         self.x -= other.x
         self.y -= other.y
+        return self
 
     def __imul__(self, other):
-        self.x *= other.x
-        self.y *= other.y
+        self.x *= other
+        self.y *= other
+        return self
 
     def __itruediv__(self, other):
         self.x /= other
         self.y /= other
+        return self
 
     def __imod__(self, other):
-        self.x %= other
-        self.y %= other
+        self.x %= other.x
+        self.y %= other.y
+        return self
 
     def __idivmod__(self, other):
         raise NotImplementedError("divmod makes no sense on Vectors")
@@ -113,26 +122,32 @@ class Vector2D:
     def __ipow__(self, other):
         self.x **= other.x
         self.y **= other.y
+        return self
 
     def __ilshift__(self, other):
         self.x <<= other.x
         self.y <<= other.y
+        return self
 
     def __irshift__(self, other):
         self.x >>= other.x
         self.y >>= other.y
+        return self
 
     def __iand__(self, other):
         self.x &= other.x
         self.y &= other.y
+        return self
 
     def __ixor__(self, other):
         self.x ^= other.x
         self.y ^= other.y
+        return self
 
     def __ior__(self, other):
         self.x |= other.x
         self.y |= other.y
+        return self
 
     def __neg__(self):
         return Vector2D(-self.x, -self.y)
@@ -163,10 +178,10 @@ class Vector2D:
         raise NotImplementedError(response)
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        return (self - other).length < epsilon
 
     def __ne__(self, other):
-        return self.x != other.x or self.y != other.y
+        return not self == other
 
     def __hash__(self):
         'TODO: Improve hashing function'
@@ -222,6 +237,11 @@ class Vector2D:
         y = self.y
         return sqrt(x * x + y * y)
 
+    @length.setter
+    def length(self, value):
+        current = self.length
+        self *= (value / current)
+
     @property
     def length_squared(self):
         x = self.x
@@ -253,18 +273,5 @@ class Vector2D:
         self.x = new_v.x
         self.y = new_v.y
 
-
-if __name__ == "__main__":
-
-    def test():
-        v1 = Vector2D(2, 4)
-        v2 = v1.normalized
-        print(v1, v2)
-        v1.normalize()
-        print(v1, v2)
-        v3 = Vector2D.from_degrees_and_length(45, 1)
-        print(v3.radians)
-        v3.rotate_degrees(45)
-        print(v3.radians)
-
-    test()
+    def copy(self):
+        return Vector2D(self.x, self.y)
