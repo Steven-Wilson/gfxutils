@@ -62,3 +62,27 @@ def test_normalize():
         assert abs(v1.radians - v3.radians) < epsilon
         assert abs(v1.degrees - v2.degrees) < epsilon
         assert abs(v1.degrees - v3.degrees) < epsilon
+
+
+def test_alternate_constructors():
+    for v1 in generate_vectors(1):
+        v2 = Vector2D.from_radians_and_length(v1.radians, v1.length)
+        v3 = Vector2D.from_degrees_and_length(v1.degrees, v1.length)
+        assert v1 == v2
+        assert v1 == v3
+
+
+def test_representation():
+    v = Vector2D(3.5, 2.125)
+    assert repr(v) == "Vector2D(3.500, 2.125)"
+
+
+def test_bytes():
+    v = Vector2D(1, 1)
+    try:
+        t = bytes(v)
+        print(t)
+    except NotImplementedError:
+        assert True
+    else:
+        assert False
