@@ -1,27 +1,19 @@
 from math import sqrt, sin, cos, radians, atan2, degrees, isclose
 
-class Vector2D:
-    '''Simple 2D vector type.
-        Emulates numeric types
-            - All numeric operators are component-wise
-                except *, /, *=, and /=
-                which are scalar multiply and divides
 
-            Example:
-                v1 = Vector2D(2, 3)
-                v2 = Vector2D(3, 2)
-                v3 = v1 ** v2
-                print(v3) # => Vector2D(8, 9)
-    '''
+class Vector2D:
+    'Simple 2D vector type that does what you expect (mostly)'
 
     __slots__ = ['x', 'y']
 
     def __init__(self, x, y):
+        'Most efficient way to make a vector: from x and y'
         self.x = x
         self.y = y
 
     @classmethod
     def from_degrees_and_length(cls, angle, length):
+        'Creates a new vector from an angle in degress and a length'
         angle = radians(angle)
         x = cos(angle) * length
         y = sin(angle) * length
@@ -29,6 +21,7 @@ class Vector2D:
 
     @classmethod
     def from_radians_and_length(cls, angle, length):
+        'Creates a new vector from an angle in radians and a length'
         x = cos(angle) * length
         y = sin(angle) * length
         return cls(x, y)
@@ -139,50 +132,62 @@ class Vector2D:
 
     @property
     def length(self):
+        'The magnitude of the vector'
         x = self.x
         y = self.y
         return sqrt(x * x + y * y)
 
     @length.setter
     def length(self, value):
+        'Sets the magnitude of the vector'
         current = self.length
         self *= (value / current)
 
     @property
     def length_squared(self):
+        'The squared magnitude of the vector.  Fast for length compares'
         x = self.x
         y = self.y
         return x * x + y * y
 
     def normalize(self):
-        self /= self.length
+        'Grows or Shrinks the vector to a size of 1.0 but maintains angle'
+        self.length = 1
 
     @property
     def normalized(self):
+        'Returns a normalized copy of the vector'
         return self / self.length
 
     @normalized.setter
     def normalized(self, value):
+        '''Ensures the vector, when normalized, will match the normalized
+            version of the vector povided'''
         self.radians = value.radians
 
     @property
     def degrees(self):
+        'Returns the angle of the vector in degrees'
         return degrees(self.radians)
 
     @degrees.setter
     def degrees(self, value):
+        'Sets the angle of the vector in degrees'
         self.radians = radians(value)
 
     @property
     def radians(self):
+        'Returns the angle of the vector in radians'
         return atan2(self.y, self.x)
 
     @radians.setter
     def radians(self, value):
+        'Sets the angle of the vector in radians'
         new_v = Vector2D.from_radians_and_length(value, self.length)
         self.x = new_v.x
         self.y = new_v.y
 
     @property
     def copy(self):
+        'Makes a copy of the vector'
         return Vector2D(self.x, self.y)
