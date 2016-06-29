@@ -191,3 +191,7 @@ class Vector2D:
     def copy(self):
         'Makes a copy of the vector'
         return Vector2D(self.x, self.y)
+
+    def dot_product(self, other):
+        'Returns the dot product'
+        return self.x * other.x + self.y * other.y

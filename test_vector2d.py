@@ -1,5 +1,6 @@
 from random import random
-from simplevector import Vector2D, isclose
+from math import isclose
+from simplevector.vector import Vector2D
 
 pi = 3.14159265358979323846264
 
@@ -248,3 +249,7 @@ def test_length():
         assert close_enough(v1.y, 0)
         assert close_enough(v1.length_squared, 100)
 
+
+def test_dot():
+    for v1 in generate_vectors(1):
+        assert close_enough(v1.dot_product(v1), v1.length_squared)
