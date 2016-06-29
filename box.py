@@ -54,3 +54,10 @@ class Box2D:
     @property
     def area(self):
         return self.size.x * self.size.y
+
+    @property
+    def points(self):
+        yield self.top_left
+        yield self.top_right
+        yield self.bottom_right
+        yield self.bottom_left
