@@ -1,9 +1,4 @@
-from sys import float_info
-from math import sqrt, sin, cos, radians, atan2, degrees
-
-
-epsilon = float_info.epsilon * 100
-
+from math import sqrt, sin, cos, radians, atan2, degrees, isclose
 
 class Vector2D:
     '''Simple 2D vector type.
@@ -60,37 +55,6 @@ class Vector2D:
         return Vector2D(self.x / other,
                         self.y / other)
 
-    def __mod__(self, other):
-        return Vector2D(self.x % other.x,
-                        self.y % other.y)
-
-    def __divmod__(self, other):
-        raise NotImplementedError("divmod makes no sense on Vectors")
-
-    def __pow__(self, other):
-        return Vector2D(self.x ** other.x,
-                        self.y ** other.y)
-
-    def __lshift__(self, other):
-        return Vector2D(self.x << other.x,
-                        self.y << other.y)
-
-    def __rshift__(self, other):
-        return Vector2D(self.x >> other.x,
-                        self.y >> other.y)
-
-    def __and__(self, other):
-        return Vector2D(self.x & other.x,
-                        self.y & other.y)
-
-    def __xor__(self, other):
-        return Vector2D(self.x ^ other.x,
-                        self.y ^ other.y)
-
-    def __or__(self, other):
-        return Vector2D(self.x | other.x,
-                        self.y | other.y)
-
     def __iadd__(self, other):
         self.x += other.x
         self.y += other.y
@@ -111,44 +75,6 @@ class Vector2D:
         self.y /= other
         return self
 
-    def __imod__(self, other):
-        self.x %= other.x
-        self.y %= other.y
-        return self
-
-    def __idivmod__(self, other):
-        raise NotImplementedError("divmod makes no sense on Vectors")
-
-    def __ipow__(self, other):
-        self.x **= other.x
-        self.y **= other.y
-        return self
-
-    def __ilshift__(self, other):
-        self.x <<= other.x
-        self.y <<= other.y
-        return self
-
-    def __irshift__(self, other):
-        self.x >>= other.x
-        self.y >>= other.y
-        return self
-
-    def __iand__(self, other):
-        self.x &= other.x
-        self.y &= other.y
-        return self
-
-    def __ixor__(self, other):
-        self.x ^= other.x
-        self.y ^= other.y
-        return self
-
-    def __ior__(self, other):
-        self.x |= other.x
-        self.y |= other.y
-        return self
-
     def __neg__(self):
         return Vector2D(-self.x, -self.y)
 
@@ -158,27 +84,9 @@ class Vector2D:
     def __abs__(self):
         return Vector2D(abs(self.x), abs(self.y))
 
-    def __invert__(self):
-        return Vector2D(~self.x, ~self.y)
-
-    def __lt__(self, other):
-        response = "Unintelligible Expression: {} < {}".format(self, other)
-        raise NotImplementedError(response)
-
-    def __gt__(self, other):
-        response = "Unintelligible Expression: {} > {}".format(self, other)
-        raise NotImplementedError(response)
-
-    def __le__(self, other):
-        response = "Unintelligible Expression: {} <= {}".format(self, other)
-        raise NotImplementedError(response)
-
-    def __ge__(self, other):
-        response = "Unintelligible Expression: {} >= {}".format(self, other)
-        raise NotImplementedError(response)
-
     def __eq__(self, other):
-        return (self - other).length < epsilon
+        return isclose((self - other).length, 0,
+                       rel_tol=0.0001, abs_tol=0.00001)
 
     def __ne__(self, other):
         return not self == other
@@ -190,9 +98,6 @@ class Vector2D:
     def __bool__(self):
         'Any truth-checks against vectors will pass'
         return True
-
-    def __len__(self):
-        raise NotImplementedError("Python wouldn't let me return float ;(")
 
     def __getitem__(self, key):
         '''Allows vec[0] to provide the x component
@@ -229,7 +134,8 @@ class Vector2D:
 
     def __contains__(self, item):
         'Returns true if either component matches the item'
-        return item == self.x or item == self.y
+        return isclose(item, self.x, rel_tol=0.0001, abs_tol=0.00001) or \
+            isclose(item, self.y, rel_tol=0.0001, abs_tol=0.00001)
 
     @property
     def length(self):
@@ -255,23 +161,28 @@ class Vector2D:
     def normalized(self):
         return self / self.length
 
+    @normalized.setter
+    def normalized(self, value):
+        self.radians = value.radians
+
     @property
     def degrees(self):
         return degrees(self.radians)
+
+    @degrees.setter
+    def degrees(self, value):
+        self.radians = radians(value)
 
     @property
     def radians(self):
         return atan2(self.y, self.x)
 
-    def rotate_degrees(self, amount):
-        self.rotate_radians(radians(amount))
-
-    def rotate_radians(self, amount):
-        angle = self.radians + amount
-        length = self.length
-        new_v = Vector2D.from_radians_and_length(angle, length)
+    @radians.setter
+    def radians(self, value):
+        new_v = Vector2D.from_radians_and_length(value, self.length)
         self.x = new_v.x
         self.y = new_v.y
 
+    @property
     def copy(self):
         return Vector2D(self.x, self.y)
