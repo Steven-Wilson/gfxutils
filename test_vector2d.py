@@ -1,6 +1,7 @@
+import pytest
 from random import random
 from math import isclose
-from simplevector.vector import Vector2D
+from simplevector import Vector2D
 
 pi = 3.14159265358979323846264
 
@@ -99,13 +100,9 @@ def test_representation():
 
 def test_bytes():
     v = Vector2D(1, 1)
-    try:
+    with pytest.raises(NotImplementedError):
         t = bytes(v)
         print(t)
-    except NotImplementedError:
-        assert True
-    else:
-        assert False
 
 
 def test_copy():
@@ -124,26 +121,14 @@ def test_index_access():
 
         assert v1 == v2
 
-        try:
+        with pytest.raises(IndexError):
             v1.x = v1[2]
-        except IndexError:
-            assert True
-        else:
-            assert False
 
-        try:
+        with pytest.raises(IndexError):
             v1[2] = 5
-        except IndexError:
-            assert True
-        else:
-            assert False
 
-        try:
+        with pytest.raises(NotImplementedError):
             del v1[0]
-        except NotImplementedError:
-            assert True
-        else:
-            assert False
 
 
 def test_add():

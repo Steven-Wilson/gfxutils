@@ -1,6 +1,5 @@
 from math import isclose
-from simplevector.box import Box2D
-from simplevector.vector import Vector2D
+from simplevector import Box2D, Vector2D
 
 pi = 3.14159265358979323846264
 
