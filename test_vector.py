@@ -1,5 +1,5 @@
 import pytest
-from simplevector import Vector2D
+from vector import Vector
 from random import random
 from math import isclose
 
@@ -15,8 +15,8 @@ def close_enough(a, b):
 
 
 def random_vector():
-    return Vector2D(rng(-20, 20),
-                    rng(-20, 20))
+    return Vector(rng(-20, 20),
+                  rng(-20, 20))
 
 
 @pytest.fixture
@@ -77,28 +77,32 @@ def test_normalize(v1):
     assert close_enough(v1.degrees - v2.degrees, 0)
     assert close_enough(v1.degrees - v3.degrees, 0)
     v4 = v1.copy
-    v4.normalized = Vector2D(1, 0)
+    v4.normalized = Vector(1, 0)
     assert close_enough(v4.length, v1.length)
     assert close_enough(v4.degrees, 0)
 
 
 def test_alternate_constructors(v1):
-    v2 = Vector2D.from_radians_and_length(v1.radians, v1.length)
-    v3 = Vector2D.from_degrees_and_length(v1.degrees, v1.length)
+    v2 = Vector.from_radians_and_length(v1.radians, v1.length)
+    v3 = Vector.from_degrees_and_length(v1.degrees, v1.length)
     assert v1 == v2
     assert v1 == v3
 
 
 def test_representation():
-    v = Vector2D(3.5, 2.125)
-    assert repr(v) == "Vector2D(3.500, 2.125)"
+    v = Vector(3.5, 2.125)
+    assert repr(v) == "Vector(3.500, 2.125)"
 
 
-def test_bytes():
-    v = Vector2D(1, 1)
-    with pytest.raises(NotImplementedError):
-        t = bytes(v)
-        print(t)
+def test_bytes(v1):
+    # pack v.x and v.y into bytes object b
+    packed_bytes = bytes(v1)
+
+    # Make a new vector from the bytes object
+    v2 = Vector.from_bytes(packed_bytes)
+
+    # The new object should be the same
+    assert v1 == v2
 
 
 def test_copy(v1):

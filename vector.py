@@ -1,10 +1,12 @@
+from struct import Struct
 from math import sqrt, sin, cos, radians, atan2, degrees, isclose
 
 
-class Vector2D:
+class Vector:
     'Simple 2D vector type that does what you expect (mostly)'
 
     __slots__ = ['x', 'y']
+    packer = Struct('dd')
 
     def __init__(self, x, y):
         'Most efficient way to make a vector: from x and y'
@@ -26,27 +28,33 @@ class Vector2D:
         y = sin(angle) * length
         return cls(x, y)
 
+    @classmethod
+    def from_bytes(cls, packed_bytes):
+        x, y = cls.packer.unpack(packed_bytes)
+        return cls(x, y)
+
     def __repr__(self):
-        return "Vector2D({:.3f}, {:.3f})".format(self.x, self.y)
+        return "{}({:.3f}, {:.3f})".format(self.__class__.__name__,
+                                           self.x, self.y)
 
     def __bytes__(self):
-        raise NotImplementedError("TODO")
+        return self.packer.pack(self.x, self.y)
 
     def __add__(self, other):
-        return Vector2D(self.x + other.x,
-                        self.y + other.y)
+        return self.__class__(self.x + other.x,
+                              self.y + other.y)
 
     def __sub__(self, other):
-        return Vector2D(self.x - other.x,
-                        self.y - other.y)
+        return self.__class__(self.x - other.x,
+                              self.y - other.y)
 
     def __mul__(self, other):
-        return Vector2D(self.x * other,
-                        self.y * other)
+        return self.__class__(self.x * other,
+                              self.y * other)
 
     def __truediv__(self, other):
-        return Vector2D(self.x / other,
-                        self.y / other)
+        return self.__class__(self.x / other,
+                              self.y / other)
 
     def __iadd__(self, other):
         self.x += other.x
@@ -69,27 +77,22 @@ class Vector2D:
         return self
 
     def __neg__(self):
-        return Vector2D(-self.x, -self.y)
+        return self.__class__(-self.x, -self.y)
 
     def __pos__(self):
-        return Vector2D(+self.x, +self.y)
+        return self.__class__(+self.x, +self.y)
 
     def __abs__(self):
-        return Vector2D(abs(self.x), abs(self.y))
+        return self.__class__(abs(self.x), abs(self.y))
 
     def __eq__(self, other):
         return isclose((self - other).length, 0,
                        rel_tol=0.0001, abs_tol=0.00001)
 
-    def __ne__(self, other):
-        return not self == other
-
     def __hash__(self):
-        'TODO: Improve hashing function'
         return hash(hash(self.x) + hash(self.y))
 
     def __bool__(self):
-        'Any truth-checks against vectors will always pass'
         return True
 
     def __getitem__(self, key):
@@ -116,7 +119,8 @@ class Vector2D:
             raise IndexError("2D Vectors only have 2 components, " + message)
 
     def __delitem__(self, key):
-        raise NotImplementedError("Cannot remove a component from a Vector2D")
+        raise NotImplementedError(
+            "Cannot remove a component from a self.__class__.")
 
     def __iter__(self):
         yield self.x
@@ -184,14 +188,14 @@ class Vector2D:
     @radians.setter
     def radians(self, value):
         'Sets the angle of the vector in radians'
-        new_v = Vector2D.from_radians_and_length(value, self.length)
+        new_v = self.__class__.from_radians_and_length(value, self.length)
         self.x = new_v.x
         self.y = new_v.y
 
     @property
     def copy(self):
         'Makes a copy of the vector'
-        return Vector2D(self.x, self.y)
+        return self.__class__(self.x, self.y)
 
     def dot_product(self, other):
         'Returns the dot product'
@@ -200,12 +204,12 @@ class Vector2D:
     @property
     def x_vector(self):
         'Returns a vector with only the x component'
-        return Vector2D(self.x, 0)
+        return self.__class__(self.x, 0)
 
     @property
     def y_vector(self):
         'Returns a vector with only the y component'
-        return Vector2D(0, self.y)
+        return self.__class__(0, self.y)
 
     @property
     def mirror(self):
@@ -215,9 +219,9 @@ class Vector2D:
     @property
     def mirror_x(self):
         'A copy of the vector mirrored over the x axis'
-        return Vector2D(self.x, -self.y)
+        return self.__class__(self.x, -self.y)
 
     @property
     def mirror_y(self):
         'A copy of the vector mirrored over the y axis'
-        return Vector2D(-self.x, self.y)
+        return self.__class__(-self.x, self.y)
