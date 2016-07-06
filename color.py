@@ -5,7 +5,7 @@ from struct import Struct
 class Color:
 
     __slots__ = ['red', 'green', 'blue', 'alpha']
-    packer = Struct('dddd')
+    packer = Struct('ffff')
 
     def __init__(self, red=0.0, green=0.0, blue=0.0, alpha=1.0):
         self.red = red
@@ -13,20 +13,26 @@ class Color:
         self.blue = blue
         self.alpha = alpha
 
+    @classmethod
+    def from_bytes(cls, packed_bytes):
+        red, green, blue, alpha = cls.packer.unpack(packed_bytes)
+        return cls(red, green, blue, alpha)
+
+    @classmethod
+    def from_hsb(cls, hue=0.0, saturation=0.0, brightness=0.0, alpha=1.0):
+        r, g, b = colorsys.hsv_to_rgb(hue, saturation, brightness)
+        return cls(red=r, green=g, blue=b, alpha=alpha)
+
     def __repr__(self):
-        template = 'Color(red={:.2f}, green={:.2f}, blue={:.2f}, alpha={:.2f})'
-        return template.format(self.red, self.green, self.blue, self.alpha)
+        template = '{}({:.3f}, {:.3f}, {:.3f}, {:.3f})'
+        return template.format(self.__class__.__name__,
+                               self.red, self.green, self.blue, self.alpha)
 
     def __bytes__(self):
         return self.packer.pack(self.red, self.green, self.blue, self.alpha)
 
     def __bool__(self):
         return True
-
-    @classmethod
-    def from_bytes(cls, packed_bytes):
-        red, green, blue, alpha = cls.packer.unpack(packed_bytes)
-        return cls(red, green, blue, alpha)
 
     @property
     def components(self):
@@ -91,3 +97,8 @@ class Color:
         '''
         h, _, _ = self.hsb
         return h
+
+    @property
+    def hex(self):
+        'Returns a hex string representation like #FF0000FF for opaque red'
+        return '#' + ''.join("%0.2X" % int(x * 255) for x in self.components)

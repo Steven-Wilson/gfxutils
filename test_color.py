@@ -17,27 +17,27 @@ def test_defaults():
 
 def test_default_repr():
     color = Color()
-    assert repr(color) == "Color(red=0.00, green=0.00, blue=0.00, alpha=1.00)"
+    assert repr(color) == "Color(0.000, 0.000, 0.000, 1.000)"
 
 
 def test_red_repr():
     color = Color(red=1.0)
-    assert repr(color) == "Color(red=1.00, green=0.00, blue=0.00, alpha=1.00)"
+    assert repr(color) == "Color(1.000, 0.000, 0.000, 1.000)"
 
 
 def test_green_repr():
     color = Color(green=1.0)
-    assert repr(color) == "Color(red=0.00, green=1.00, blue=0.00, alpha=1.00)"
+    assert repr(color) == "Color(0.000, 1.000, 0.000, 1.000)"
 
 
 def test_blue_repr():
     color = Color(blue=1.0)
-    assert repr(color) == "Color(red=0.00, green=0.00, blue=1.00, alpha=1.00)"
+    assert repr(color) == "Color(0.000, 0.000, 1.000, 1.000)"
 
 
 def test_alpha_repr():
     color = Color(alpha=0.0)
-    assert repr(color) == "Color(red=0.00, green=0.00, blue=0.00, alpha=0.00)"
+    assert repr(color) == "Color(0.000, 0.000, 0.000, 0.000)"
 
 
 # def test_components():
@@ -117,3 +117,19 @@ def test_hue():
 
     color = Color(blue=1.0)
     assert abs(color.hue - 0.66666) < 0.001
+
+
+def test_hsb_constructor():
+    red = Color.from_hsb(hue=0.0, saturation=1.0, brightness=1.0)
+    assert red == Color(red=1.0)
+
+
+def test_hex_code():
+    red = Color(red=1.0)
+    green = Color(green=1.0)
+    blue = Color(blue=1.0)
+    transparent_black = Color(alpha=0.5)
+    assert red.hex == '#FF0000FF'
+    assert green.hex == '#00FF00FF'
+    assert blue.hex == '#0000FFFF'
+    assert transparent_black.hex == '#0000007F'
