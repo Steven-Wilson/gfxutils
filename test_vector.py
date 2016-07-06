@@ -235,3 +235,8 @@ def test_length(v1):
 
 def test_dot(v1):
     assert close_enough(v1.dot_product(v1), v1.length_squared)
+
+
+def test_packed_size():
+    b = bytes(Vector())
+    assert len(b) == 16

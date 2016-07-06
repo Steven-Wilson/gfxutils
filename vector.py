@@ -8,7 +8,7 @@ class Vector:
     __slots__ = ['x', 'y']
     packer = Struct('dd')
 
-    def __init__(self, x, y):
+    def __init__(self, x=0.0, y=0.0):
         'Most efficient way to make a vector: from x and y'
         self.x = x
         self.y = y
@@ -225,3 +225,6 @@ class Vector:
     def mirror_y(self):
         'A copy of the vector mirrored over the y axis'
         return self.__class__(-self.x, self.y)
+
+    def write(self, writable):
+        return writable.write(bytes(self))

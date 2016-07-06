@@ -133,3 +133,8 @@ def test_hex_code():
     assert green.hex == '#00FF00FF'
     assert blue.hex == '#0000FFFF'
     assert transparent_black.hex == '#0000007F'
+
+
+def test_packed_size():
+    b = bytes(Color())
+    assert len(b) == 4

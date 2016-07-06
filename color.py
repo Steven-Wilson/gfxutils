@@ -5,7 +5,7 @@ from struct import Struct
 class Color:
 
     __slots__ = ['red', 'green', 'blue', 'alpha']
-    packer = Struct('ffff')
+    packer = Struct('BBBB')
 
     def __init__(self, red=0.0, green=0.0, blue=0.0, alpha=1.0):
         self.red = red
@@ -15,7 +15,8 @@ class Color:
 
     @classmethod
     def from_bytes(cls, packed_bytes):
-        red, green, blue, alpha = cls.packer.unpack(packed_bytes)
+        components = cls.packer.unpack(packed_bytes)
+        red, green, blue, alpha = [x / 255 for x in components]
         return cls(red, green, blue, alpha)
 
     @classmethod
@@ -29,7 +30,8 @@ class Color:
                                self.red, self.green, self.blue, self.alpha)
 
     def __bytes__(self):
-        return self.packer.pack(self.red, self.green, self.blue, self.alpha)
+        red, green, blue, alpha = [int(x * 255) for x in self.components]
+        return self.packer.pack(red, green, blue, alpha)
 
     def __bool__(self):
         return True
@@ -102,3 +104,6 @@ class Color:
     def hex(self):
         'Returns a hex string representation like #FF0000FF for opaque red'
         return '#' + ''.join("%0.2X" % int(x * 255) for x in self.components)
+
+    def write(self, writable):
+        return writable.write(bytes(self))
