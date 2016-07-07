@@ -10,8 +10,8 @@ class Vector:
 
     def __init__(self, x=0.0, y=0.0):
         'Most efficient way to make a vector: from x and y'
-        self.x = x
-        self.y = y
+        self.x = float(x)
+        self.y = float(y)
 
     @classmethod
     def from_degrees_and_length(cls, angle, length):

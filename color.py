@@ -8,10 +8,10 @@ class Color:
     packer = Struct('BBBB')
 
     def __init__(self, red=0.0, green=0.0, blue=0.0, alpha=1.0):
-        self.red = red
-        self.green = green
-        self.blue = blue
-        self.alpha = alpha
+        self.red = float(red)
+        self.green = float(green)
+        self.blue = float(blue)
+        self.alpha = float(alpha)
 
     @classmethod
     def from_bytes(cls, packed_bytes):
