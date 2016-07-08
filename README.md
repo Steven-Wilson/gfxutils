@@ -74,5 +74,43 @@ A group of simple implementations for common utilities used in graphical applica
 
     ```
 - Colors
+    - Creation of Color instances
+    ```python
+        white = Color(red=1.0, green=1.0, blue=1.0)
+        assert white.hex == '#FFFFFFFF'
+
+        clear = Color(alpha=0.0)
+        assert clear.hex == '#00000000'
+
+        red = Color.from_hsb(hue=0.0, saturation=1.0, brightness=1.0)
+        assert red.hex == '#FF0000FF'
+    ```
+    - Primary Colors
+    ```python
+        red = Color(red=1.0)
+        assert red.hex == '#FF0000FF'
+
+        green = Color(green=1.0)
+        assert green.hex == '#00FF00FF'
+
+        blue = Color(blue=1.0)
+        assert blue.hex == '#0000FFFF'
+    ```
+    - Transparency via an alpha channel
+    ```python
+        transparent_black = Color(alpha=0.5)
+        assert transparent_black.hex == '#0000007F'
+    ```
+    - Comparisons use equality
+    ```python
+        red1 = Color(red=1.0)
+        red2 = Color.from_hsb(hue=0.0, saturation=1.0, brightness=1.0)
+        assert red1 == red2
+    ```
+    - Bytes built-in is supported
+    ```python
+        green = Color(green=1.0, alpha=0.5)
+        assert bytes(green) == b'\x00\xFF\x00\x7F'
+    ```
 - Shapes
     - Circle

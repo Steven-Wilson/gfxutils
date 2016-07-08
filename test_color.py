@@ -138,3 +138,39 @@ def test_hex_code():
 def test_packed_size():
     b = bytes(Color())
     assert len(b) == 4
+
+
+def test_documentation():
+    white = Color(red=1.0, green=1.0, blue=1.0)
+    assert white.hex == '#FFFFFFFF'
+
+    clear = Color(alpha=0.0)
+    assert clear.hex == '#00000000'
+
+    red = Color.from_hsb(hue=0.0, saturation=1.0, brightness=1.0)
+    assert red.hex == '#FF0000FF'
+
+
+def test_documentation_primary_colors():
+    red = Color(red=1.0)
+    assert red.hex == '#FF0000FF'
+
+    green = Color(green=1.0)
+    assert green.hex == '#00FF00FF'
+
+    blue = Color(blue=1.0)
+    assert blue.hex == '#0000FFFF'
+
+    transparent_black = Color(alpha=0.5)
+    assert transparent_black.hex == '#0000007F'
+
+
+def test_documentation_equality():
+    red1 = Color(red=1.0)
+    red2 = Color.from_hsb(hue=0.0, saturation=1.0, brightness=1.0)
+    assert red1 == red2
+
+
+def test_documentation_bytes():
+    green = Color(green=1.0, alpha=0.5)
+    assert bytes(green) == b'\x00\xFF\x00\x7F'
