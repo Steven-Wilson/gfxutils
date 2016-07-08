@@ -71,9 +71,11 @@ A group of simple implementations for common utilities used in graphical applica
         # normalize v1 in-place
         v1.normalize()
         assert abs(v1.length - 1) < 0.0001
-
     ```
 - Colors
+    - __Use a proper c-based library to manipulate bitmaps__
+        - A list of Color instances long enough to process a 1920x1080 bitmap (2,073,600 instances) will take several seconds to make
+        - SDL2, pyglet, pillow, and numpy may be acceptable choices depending on your need
     - Creation of Color instances
     ```python
         white = Color(red=1.0, green=1.0, blue=1.0)
@@ -114,3 +116,8 @@ A group of simple implementations for common utilities used in graphical applica
     ```
 - Shapes
     - Circle
+        - Documentation Coming Soon
+    - TODO:
+        - Line
+        - Triangle
+        - Rectangle
