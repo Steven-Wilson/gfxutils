@@ -4,15 +4,15 @@ A group of simple implementations for common utilities used in graphical applica
     - Importing
     ```python
         from gfxutils.vector import Vector, pi
-        
+            
         v1 = Vector(x=10, y=10)
         assert v1.length == 14.14213562373095048
-        
+    
         v2 = Vector.from_degrees_and_length(45, 14.14213562373095048)
         assert v1 == v2
-        assert v2.x == 10
-        assert v2.y == 10
-        
+        assert abs(v2.x - 10) < 0.0001
+        assert abs(v2.y - 10) < 0.0001
+    
         v3 = Vector.from_radians_and_length(pi / 4, 14.14213562373095048)
         assert v1 == v3
         
@@ -20,6 +20,7 @@ A group of simple implementations for common utilities used in graphical applica
     - Vector Math
         - Addition and Subtraction is vector addition and subtraction
         ```python
+        
             v1 = Vector(x=10, y=20)
             v2 = Vector(y=1)
             v3 = v1 + v2
@@ -51,7 +52,7 @@ A group of simple implementations for common utilities used in graphical applica
         # within rounding of 45°
         assert abs(v1.degrees - 45) < 0.0001
         assert abs(v1.radians - pi / 4) < 0.0001
-        
+    
         v1.degrees += 45
         assert v1 == Vector(y=v1.length)
     ```
@@ -59,15 +60,15 @@ A group of simple implementations for common utilities used in graphical applica
     ```python
         v1 = Vector(x=10, y=10)
         assert v1.length == 14.14213562373095048
-        
+    
         # create a normalized copy without modifying v1
         v2 = v1.normalized
         assert v1.length == 14.14213562373095048
-        assert v2.length == 1
-        
+        assert abs(v2.length - 1) < 0.0001
+    
         # normalize v1 in-place
         v1.normalize()
-        assert v1.length == 1
+        assert abs(v1.length - 1) < 0.0001
         
     ```
 - Colors
