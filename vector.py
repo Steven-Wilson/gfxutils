@@ -9,13 +9,33 @@ class Vector:
     packer = Struct('dd')
 
     def __init__(self, x=0.0, y=0.0):
-        'Most efficient way to make a vector: from x and y'
+        '''Most efficient way to make a Vector: from x and y
+
+            # (0.0, 0.0)
+            a = Vector()
+
+            # (10, 0.0)
+            b = Vector(x=10)
+
+            # (0.0, 10.0)
+            c = Vector(y=10)
+
+            # (3.0, 4.0)
+            d = Vector(3.0, 4.0)
+        '''
         self.x = float(x)
         self.y = float(y)
 
     @classmethod
     def from_degrees_and_length(cls, angle, length):
-        'Creates a new vector from an angle in degress and a length'
+        '''Creates a new vector from an angle in degrees and a length
+
+            # (10.0, 0.0)
+            Vector.from_degrees_and_length(0, 10.0)
+
+            # (0.707, 0.707)
+            Vector.from_degrees_and_length(45, 10.0)
+        '''
         angle = radians(angle)
         x = cos(angle) * length
         y = sin(angle) * length
@@ -23,13 +43,30 @@ class Vector:
 
     @classmethod
     def from_radians_and_length(cls, angle, length):
-        'Creates a new vector from an angle in radians and a length'
+        '''Creates a new vector from an angle in radians and a length
+
+            # (10.0, 0.0)
+            Vector.from_radians_and_length(0, 10.0)
+
+            # (0.707, 0.707)
+            Vecor.from_radians_and_length(pi / 4, 1.0)
+        '''
         x = cos(angle) * length
         y = sin(angle) * length
         return cls(x, y)
 
     @classmethod
     def from_bytes(cls, packed_bytes):
+        '''Creates a new vector from a bytes object that is
+            in the format created by calling bytes(...) on
+            an instance of a Vector.
+
+            a = Vector(10, 20)
+            packed_bytes = bytes(a)
+            b = Vector.from_bytes(packed_bytes)
+            assert a == b
+
+        '''
         x, y = cls.packer.unpack(packed_bytes)
         return cls(x, y)
 
@@ -119,8 +156,7 @@ class Vector:
             raise IndexError("2D Vectors only have 2 components, " + message)
 
     def __delitem__(self, key):
-        raise NotImplementedError(
-            "Cannot remove a component from a self.__class__.")
+        raise NotImplementedError("Cannot remove a component")
 
     def __iter__(self):
         yield self.x
@@ -227,4 +263,5 @@ class Vector:
         return self.__class__(-self.x, self.y)
 
     def write(self, writable):
+        'Writes itself to the file-like object passed in as binary'
         return writable.write(bytes(self))

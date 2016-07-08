@@ -1,5 +1,5 @@
 import pytest
-from color import Color
+from .color import Color
 
 
 @pytest.fixture
