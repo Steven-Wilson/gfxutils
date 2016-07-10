@@ -1,6 +1,8 @@
 from struct import Struct
 from math import sqrt, sin, cos, radians, atan2, degrees, isclose
 
+__all__ = ['Vector']
+
 
 class Vector:
     'Simple 2D vector type that does what you expect (mostly)'
