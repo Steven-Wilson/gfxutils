@@ -20,7 +20,7 @@ A group of simple implementations for common utilities used in graphical applica
 
     ```
     - Vector Math
-        - Addition and Subtraction is vector addition and subtraction
+        - Addition and Subtraction is element-wise vector math
         ```python
 
             v1 = Vector(x=10, y=20)
@@ -34,7 +34,7 @@ A group of simple implementations for common utilities used in graphical applica
             v3 -= Vector(x=5)
             assert v4 == v3
         ```
-        - Multiplication and Division is scalar addition and subtraction
+        - Multiplication and Division is Vector * Scalar and Vector / Scalar
         ```python
             v1 = Vector(x=10, y=20)
             v2 = v1 * 2
