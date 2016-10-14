@@ -5,6 +5,12 @@ from struct import Struct
 class Color:
 
     __slots__ = ['red', 'green', 'blue', 'alpha']
+
+    # NOTE: Even though we store these as floats between 0 and 1 in python
+    #       When we write this out to binary, we encode it as 4 bytes RGBA.
+    #       This will lose precision, but most displays have this as their
+    #       native pixel format, So the 4x space cost seems worthwhile
+    #       since you're most likely Looking to save space if using binary
     packer = Struct('BBBB')
 
     def __init__(self, red=0.0, green=0.0, blue=0.0, alpha=1.0):
@@ -38,6 +44,7 @@ class Color:
 
     @property
     def components(self):
+        'Returns a tuple of the component channels in RGBA order'
         return self.red, self.green, self.blue, self.alpha
 
     def __eq__(self, other):
@@ -107,3 +114,120 @@ class Color:
 
     def write(self, writable):
         return writable.write(bytes(self))
+
+    def lighten(self, other):
+        alpha = max(self.alpha, other.alpha)
+        red = max(self.red, other.red)
+        green = max(self.green, other.green)
+        blue = max(self.blue, other.blue)
+        return self.__class__(red, green, blue, alpha)
+
+    def darken(self, other):
+        alpha = min(self.alpha, other.alpha)
+        red = min(self.red, other.red)
+        green = min(self.green, other.green)
+        blue = min(self.blue, other.blue)
+        return self.__class__(red, green, blue, alpha)
+
+    def add(self, other):
+        alpha = other.alpha
+        red = min(self.red + other.red * other.alpha, 1.0)
+        green = min(self.green + other.green * other.alpha, 1.0)
+        blue = min(self.blue + other.blue * other.alpha, 1.0)
+        return self.__class__(red, green, blue, self.alpha)
+
+    def subtract(self, other):
+        alpha = other.alpha
+        red = max(self.red - other.red * other.alpha, 0.0)
+        green = max(self.green - other.green * other.alpha, 0.0)
+        blue = max(self.blue - other.blue * other.alpha, 0.0)
+        return self.__class__(red, green, blue, self.alpha)
+
+    def multiply(self, other):
+        red = min(self.red * other.red, 1.0)
+        green = min(self.green * other.green, 1.0)
+        blue = min(self.blue * other.blue, 1.0)
+        return self.__class__(red, green, blue, self.alpha)
+
+    def divide(self, other):
+        red = 1.0 if other.red == 0 else self.red / other.red
+        green = 1.0 if other.green == 0 else self.green / other.green
+        blue = 1.0 if other.blue == 0 else self.blue / other.blue
+        return self.__class__(red, green, blue, self.alpha)
+
+    def difference(self, other):
+        alpha = abs(self.alpha - other.alpha)
+        red = abs(self.red - other.red)
+        green = abs(self.green - other.green)
+        blue = abs(self.blue - other.blue)
+        return self.__class__(red, green, blue, self.alpha)
+
+    @property
+    def hue_description(self):
+        hue = self.hue
+        if hue < 1 / 24:
+            return 'Red'
+        elif hue < 3 / 24:
+            return 'Orange'
+        elif hue < 5 / 24:
+            return 'Yellow'
+        elif hue < 7 / 24:
+            return 'Lime'
+        elif hue < 9 / 24:
+            return 'Green'
+        elif hue < 11 / 24:
+            return 'Teal'
+        elif hue < 13 / 24:
+            return 'Cyan'
+        elif hue < 15 / 24:
+            return 'Aqua'
+        elif hue < 17 / 24:
+            return 'Blue'
+        elif hue < 19 / 24:
+            return 'Purple'
+        elif hue < 21 / 24:
+            return 'Magenta'
+        elif hue < 23 / 24:
+            return 'Pink'
+        else:
+            return 'Red'
+
+    @property
+    def brightness_description(self):
+        brightness = self.brightness
+        if brightness > 0.8:
+            return 'Bright'
+        elif brightness > 0.2:
+            return ''
+        elif brightness > 0.05:
+            return 'Dark'
+        elif brightness < 0.001:
+            return 'Black'
+        else:
+            return 'Very Dark'
+
+    @property
+    def saturation_description(self):
+        saturation = self.saturation
+        if saturation > 0.75:
+            return 'Vivid'
+        elif saturation > 0.5:
+            return ''
+        elif saturation > 0.1:
+            return 'Pastel'
+        else:
+            return 'Gray'
+
+    @property
+    def description(self):
+        brightness = self.brightness_description
+        if brightness == 'Black':
+            return 'Black'
+        hue = self.hue_description
+        saturation = self.saturation_description
+        if saturation == 'Gray':
+            hue = 'Gray'
+            saturation = ''
+        descriptions = [saturation, brightness, hue]
+        descriptions = [d for d in descriptions if d != '']
+        return ' '.join(descriptions)

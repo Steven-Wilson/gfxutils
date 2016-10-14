@@ -1,7 +1,6 @@
 import pytest
 from .vector import Vector
 from random import random
-from math import isclose
 
 
 pi = 3.14159265358979323846264
@@ -12,7 +11,7 @@ def rng(a, b):
 
 
 def close_enough(a, b):
-    return isclose(a, b, rel_tol=0.0001, abs_tol=0.00001)
+    return abs(a - b) < 0.0001
 
 
 def random_vector():

@@ -1,5 +1,5 @@
 from struct import Struct
-from math import sqrt, sin, cos, radians, atan2, degrees, isclose
+from math import sqrt, sin, cos, radians, atan2, degrees
 
 
 class Vector:
@@ -123,8 +123,12 @@ class Vector:
         return self.__class__(abs(self.x), abs(self.y))
 
     def __eq__(self, other):
-        return isclose((self - other).length, 0,
-                       rel_tol=0.0001, abs_tol=0.00001)
+        if abs(self.x - other.x) > 0.0001:
+            return False
+        elif abs(self.y - other.y) > 0.0001:
+            return False
+        else:
+            return True
 
     def __hash__(self):
         return hash(hash(self.x) + hash(self.y))
@@ -168,8 +172,12 @@ class Vector:
 
     def __contains__(self, item):
         'Returns true if either component matches the item'
-        return isclose(item, self.x, rel_tol=0.0001, abs_tol=0.00001) or \
-            isclose(item, self.y, rel_tol=0.0001, abs_tol=0.00001)
+        if abs(self.x - item) < 0.0001:
+            return True
+        elif abs(self.y - item) < 0.0001:
+            return True
+        else:
+            return False
 
     @property
     def length(self):

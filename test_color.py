@@ -40,10 +40,12 @@ def test_alpha_repr():
     assert repr(color) == "Color(0.000, 0.000, 0.000, 0.000)"
 
 
-# def test_components():
-#     color = Color(red=1, green=2, blue=3, alpha=4)
-#     for n, component in enumerate(color.components):
-#         assert n + 1 == component
+def test_components():
+    'Confirms that components come out in RGBA order'
+    color = Color(red=1, green=2, blue=3, alpha=4)
+    for n, component in enumerate(color.components):
+        assert n + 1 == component
+
 
 def test_bool():
     assert Color()
@@ -174,3 +176,77 @@ def test_documentation_equality():
 def test_documentation_bytes():
     green = Color(green=1.0, alpha=0.5)
     assert bytes(green) == b'\x00\xFF\x00\x7F'
+
+
+def test_lighten():
+    base = Color(0.0, 0.8, 0.0)
+    overlay = Color(1.0, 0.5, 0.0)
+    assert base.lighten(overlay) == Color(1.0, 0.8, 0.0)
+
+
+def test_darken():
+    base = Color(0.0, 0.8, 0.0)
+    overlay = Color(1.0, 0.5, 0.0)
+    assert base.darken(overlay) == Color(0.0, 0.5, 0.0)
+
+
+def test_add():
+    base = Color(0.0, 0.5, 0.0)
+    overlay = Color(1.0, 0.5, 0.0, 0.5)
+    assert base.add(overlay) == Color(0.5, 0.75, 0.0)
+
+
+def test_subtract():
+    base = Color(0.0, 0.5, 0.0)
+    overlay = Color(1.0, 0.5, 0.0, 0.5)
+    assert base.subtract(overlay) == Color(0.0, 0.25, 0.0)
+
+
+def test_multiply():
+    base = Color(0.0, 0.5, 0.0)
+    overlay = Color(1.0, 0.5, 0.0, 0.5)
+    assert base.multiply(overlay) == Color(0.0, 0.25, 0.0)
+
+
+def test_divide():
+    base = Color(0.0, 0.5, 1.0)
+    overlay = Color(1.0, 0.5, 0.0, 0.5)
+    assert base.divide(overlay) == Color(0.0, 1.0, 1.0)
+
+
+def test_hue_description():
+    assert Color.from_hsb(hue=0 / 12, saturation=1.0, brightness=1.0).hue_description == 'Red'
+    assert Color.from_hsb(hue=1 / 12, saturation=1.0, brightness=1.0).hue_description == 'Orange'
+    assert Color.from_hsb(hue=2 / 12, saturation=1.0, brightness=1.0).hue_description == 'Yellow'
+    assert Color.from_hsb(hue=3 / 12, saturation=1.0, brightness=1.0).hue_description == 'Lime'
+    assert Color.from_hsb(hue=4 / 12, saturation=1.0, brightness=1.0).hue_description == 'Green'
+    assert Color.from_hsb(hue=5 / 12, saturation=1.0, brightness=1.0).hue_description == 'Teal'
+    assert Color.from_hsb(hue=6 / 12, saturation=1.0, brightness=1.0).hue_description == 'Cyan'
+    assert Color.from_hsb(hue=7 / 12, saturation=1.0, brightness=1.0).hue_description == 'Aqua'
+    assert Color.from_hsb(hue=8 / 12, saturation=1.0, brightness=1.0).hue_description == 'Blue'
+    assert Color.from_hsb(hue=9 / 12, saturation=1.0, brightness=1.0).hue_description == 'Purple'
+    assert Color.from_hsb(hue=10 / 12, saturation=1.0, brightness=1.0).hue_description == 'Magenta'
+    assert Color.from_hsb(hue=11 / 12, saturation=1.0, brightness=1.0).hue_description == 'Pink'
+    assert Color.from_hsb(hue=12 / 12, saturation=1.0, brightness=1.0).hue_description == 'Red'
+
+
+def test_brightness_description():
+    assert Color.from_hsb(brightness=1.0).brightness_description == 'Bright'
+    assert Color.from_hsb(brightness=0.5).brightness_description == ''
+    assert Color.from_hsb(brightness=0.0).brightness_description == 'Black'
+
+
+def test_saturation_description():
+    assert Color.from_hsb(saturation=0.8, brightness=1.0).saturation_description == 'Vivid'
+    assert Color.from_hsb(saturation=0.6, brightness=1.0).saturation_description == ''
+    assert Color.from_hsb(saturation=0.4, brightness=1.0).saturation_description == 'Pastel'
+    assert Color.from_hsb(saturation=0.2, brightness=1.0).saturation_description == 'Pastel'
+    assert Color.from_hsb(saturation=0.0, brightness=1.0).saturation_description == 'Gray'
+
+
+def test_description():
+    assert Color().description == 'Black'
+    assert Color.from_hsb(brightness=0.5).description == 'Gray'
+    assert Color(red=1.0).description == 'Vivid Bright Red'
+    assert Color(red=1.0, green=0.9, blue=0.8).description == 'Pastel Bright Orange'
+    assert Color(red=1.0, green=0.8, blue=0.8).description == 'Pastel Bright Red'
