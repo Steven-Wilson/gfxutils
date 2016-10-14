@@ -1,5 +1,5 @@
-from .shape import Circle
-from .vector import Vector
+from . import Circle
+from . import Vector
 
 
 def test_radius():

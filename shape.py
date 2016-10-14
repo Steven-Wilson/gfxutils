@@ -2,6 +2,8 @@ from .vector import Vector
 from struct import Struct
 
 
+__all__ = ['Circle']
+
 pi = 3.14159265358979323846264
 
 

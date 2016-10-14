@@ -1,6 +1,8 @@
 import colorsys
 from struct import Struct
 
+__all__ = ['Color']
+
 
 class Color:
 

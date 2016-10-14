@@ -1,5 +1,5 @@
 import pytest
-from .vector import Vector
+from . import Vector
 from random import random
 
 
