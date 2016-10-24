@@ -21,6 +21,13 @@ class Color:
         self.blue = float(blue)
         self.alpha = float(alpha)
 
+    def copy(self):
+        return Color(self.red, self.green, self.blue, self.alpha)
+
+    @property
+    def uint32(self):
+        return int(self.red * 255) << 24 | int(self.green * 255) << 16 | int(self.blue * 255) << 8 | int(self.alpha * 255)
+
     @classmethod
     def from_bytes(cls, packed_bytes):
         components = cls.packer.unpack(packed_bytes)
@@ -108,6 +115,13 @@ class Color:
         '''
         h, _, _ = self.hsb
         return h
+
+    @hue.setter
+    def hue(self, other):
+        # Bound between 0 and 1 on a repeating period
+        other = other - (other // 1)
+        _, s, b = self.hsb
+        self.red, self.green, self.blue = colorsys.hsv_to_rgb(other, s, b)
 
     @property
     def hex(self):
