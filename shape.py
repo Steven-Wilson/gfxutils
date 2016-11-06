@@ -1,4 +1,4 @@
-from .vector import Vector
+from .vector import V2
 from struct import Struct
 
 
@@ -15,14 +15,14 @@ class Circle:
     def __init__(self, radius=1.0, position=None):
         self.radius = float(radius)
         if not position:
-            self.position = Vector(0, 0)
+            self.position = V2(0, 0)
         else:
             self.position = position
 
     @classmethod
     def from_bytes(cls, packed_bytes):
         radius = cls.packer.unpack(packed_bytes[:8])[0]
-        position = Vector.from_bytes(packed_bytes[8:])
+        position = V2.from_bytes(packed_bytes[8:])
         return cls(radius=radius, position=position)
 
     @property
@@ -58,19 +58,19 @@ class Rect:
 
     def __init__(self, position=None, size=None):
         if position is None:
-            self.position = Vector(0, 0)
+            self.position = V2(0, 0)
         else:
             self.position = position
 
         if size is None:
-            self.size = Vector(0, 0)
+            self.size = V2(0, 0)
         else:
             self.size = size
 
     @classmethod
     def from_bytes(cls, packed_bytes):
-        position = Vector.from_bytes(packed_bytes[:16])
-        size = Vector.from_bytes(packed_bytes[16:])
+        position = V2.from_bytes(packed_bytes[:16])
+        size = V2.from_bytes(packed_bytes[16:])
         return cls(position=position, size=size)
 
     def __bytes__(self):
@@ -158,6 +158,6 @@ class Line:
             b2 = - m2 * self.p2.x
             x = (b2 - b1) / (m1 - m2)
             y = m1 * x + b1
-            return Vector(x, y)
+            return V2(x, y)
         except ZeroDivisionError:
             raise NotImplementedError('Axis-aligned lines not yet supported')

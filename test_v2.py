@@ -1,5 +1,5 @@
 import pytest
-from . import Vector
+from . import V2
 from random import random
 
 
@@ -15,8 +15,8 @@ def close_enough(a, b):
 
 
 def random_vector():
-    return Vector(rng(-20, 20),
-                  rng(-20, 20))
+    return V2(rng(-20, 20),
+              rng(-20, 20))
 
 
 @pytest.fixture
@@ -77,21 +77,21 @@ def test_normalize(v1):
     assert close_enough(v1.degrees - v2.degrees, 0)
     assert close_enough(v1.degrees - v3.degrees, 0)
     v4 = v1.copy
-    v4.normalized = Vector(1, 0)
+    v4.normalized = V2(1, 0)
     assert close_enough(v4.length, v1.length)
     assert close_enough(v4.degrees, 0)
 
 
 def test_alternate_constructors(v1):
-    v2 = Vector.from_radians_and_length(v1.radians, v1.length)
-    v3 = Vector.from_degrees_and_length(v1.degrees, v1.length)
+    v2 = V2.from_radians_and_length(v1.radians, v1.length)
+    v3 = V2.from_degrees_and_length(v1.degrees, v1.length)
     assert v1 == v2
     assert v1 == v3
 
 
 def test_representation():
-    v = Vector(3.5, 2.125)
-    assert repr(v) == "Vector(3.500, 2.125)"
+    v = V2(3.5, 2.125)
+    assert repr(v) == "V2(3.500, 2.125)"
 
 
 def test_bytes(v1):
@@ -99,7 +99,7 @@ def test_bytes(v1):
     packed_bytes = bytes(v1)
 
     # Make a new vector from the bytes object
-    v2 = Vector.from_bytes(packed_bytes)
+    v2 = V2.from_bytes(packed_bytes)
 
     # The new object should be the same
     assert v1 == v2
@@ -238,62 +238,62 @@ def test_dot(v1):
 
 
 def test_packed_size():
-    b = bytes(Vector())
+    b = bytes(V2())
     assert len(b) == 16
 
 
 def test_documentation():
-    v1 = Vector(x=10, y=10)
+    v1 = V2(x=10, y=10)
     assert v1.length == 14.14213562373095048
 
-    v2 = Vector.from_degrees_and_length(45, 14.14213562373095048)
+    v2 = V2.from_degrees_and_length(45, 14.14213562373095048)
     assert v1 == v2
     assert abs(v2.x - 10) < 0.0001
     assert abs(v2.y - 10) < 0.0001
 
-    v3 = Vector.from_radians_and_length(pi / 4, 14.14213562373095048)
+    v3 = V2.from_radians_and_length(pi / 4, 14.14213562373095048)
     assert v1 == v3
 
 
 def test_documentation_add_sub():
-    v1 = Vector(x=10, y=20)
-    v2 = Vector(y=1)
+    v1 = V2(x=10, y=20)
+    v2 = V2(y=1)
     v3 = v1 + v2
-    assert v3 == Vector(10, 21)
-    v4 = v3 - Vector(x=5)
-    assert v4 == Vector(5, 21)
+    assert v3 == V2(10, 21)
+    v4 = v3 - V2(x=5)
+    assert v4 == V2(5, 21)
     v1 += v2
     assert v1 == v3
-    v3 -= Vector(x=5)
+    v3 -= V2(x=5)
     assert v4 == v3
 
 
 def test_documentation_mul_div():
-    v1 = Vector(x=10, y=20)
+    v1 = V2(x=10, y=20)
     v2 = v1 * 2
-    assert v2 == Vector(20, 40)
+    assert v2 == V2(20, 40)
     v3 = v1 / 2
-    assert v3 == Vector(5, 10)
+    assert v3 == V2(5, 10)
     v4 = v1.copy
     v4 *= 2
-    assert v4 == Vector(20, 40)
+    assert v4 == V2(20, 40)
     v5 = v1.copy
     v5 /= 2
-    assert v5 == Vector(5, 10)
+    assert v5 == V2(5, 10)
 
 
 def test_documentation_angles():
-    v1 = Vector(x=10, y=10)
+    v1 = V2(x=10, y=10)
     # within rounding of 45°
     assert abs(v1.degrees - 45) < 0.0001
     assert abs(v1.radians - pi / 4) < 0.0001
 
     v1.degrees += 45
-    assert v1 == Vector(y=v1.length)
+    assert v1 == V2(y=v1.length)
 
 
 def test_documentation_normalization():
-    v1 = Vector(x=10, y=10)
+    v1 = V2(x=10, y=10)
     assert v1.length == 14.14213562373095048
 
     # create a normalized copy without modifying v1
