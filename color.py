@@ -21,6 +21,7 @@ class Color:
         self.blue = float(blue)
         self.alpha = float(alpha)
 
+    @property
     def copy(self):
         return Color(self.red, self.green, self.blue, self.alpha)
 

@@ -3,6 +3,15 @@ import pytest
 from . import Color
 
 
+class MockWriter:
+
+    def __init__(self):
+        self.written = None
+
+    def write(self, value):
+        self.written = value
+
+
 @pytest.fixture
 def cornflower():
     return Color(red=0.478, green=0.671, blue=0.890, alpha=1.0)
@@ -228,13 +237,15 @@ def test_hue_description():
     assert Color.from_hsb(hue=9 / 12, saturation=1.0, brightness=1.0).hue_description == 'Purple'
     assert Color.from_hsb(hue=10 / 12, saturation=1.0, brightness=1.0).hue_description == 'Magenta'
     assert Color.from_hsb(hue=11 / 12, saturation=1.0, brightness=1.0).hue_description == 'Pink'
-    assert Color.from_hsb(hue=12 / 12, saturation=1.0, brightness=1.0).hue_description == 'Red'
+    assert Color.from_hsb(hue=11.9 / 12, saturation=1.0, brightness=1.0).hue_description == 'Red'
 
 
 def test_brightness_description():
     assert Color.from_hsb(brightness=1.0).brightness_description == 'Bright'
     assert Color.from_hsb(brightness=0.5).brightness_description == ''
+    assert Color.from_hsb(brightness=0.1).brightness_description == 'Dark'
     assert Color.from_hsb(brightness=0.0).brightness_description == 'Black'
+    assert Color.from_hsb(brightness=0.002).brightness_description == 'Very Dark'
 
 
 def test_saturation_description():
@@ -251,3 +262,38 @@ def test_description():
     assert Color(red=1.0).description == 'Vivid Bright Red'
     assert Color(red=1.0, green=0.9, blue=0.8).description == 'Pastel Bright Orange'
     assert Color(red=1.0, green=0.8, blue=0.8).description == 'Pastel Bright Red'
+
+
+def test_copy(cornflower):
+    c = cornflower.copy
+    assert c == cornflower
+    assert c is not cornflower
+
+
+def test_uint32():
+    red = Color(red=1)
+    assert red.uint32 == 0xFF0000FF
+    green = Color(green=1)
+    assert green.uint32 == 0x00FF00FF
+    blue = Color(blue=1)
+    assert blue.uint32 == 0x0000FFFF
+
+
+def test_hue_set():
+    blue = Color(blue=1)
+    # set hue to red
+    blue.hue = 0
+    assert blue.hex == '#FF0000FF'
+
+
+def test_difference():
+    red = Color(red=1)
+    blue = Color(blue=1)
+    assert red.difference(blue) == blue.difference(red)
+    assert red.difference(blue).uint32 == 0xFF00FFFF
+
+
+def test_write(cornflower):
+    writer = MockWriter()
+    cornflower.write(writer)
+    assert writer.written == bytes(cornflower)
