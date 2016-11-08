@@ -2,6 +2,15 @@ from . import Circle
 from . import V2
 
 
+class MockWriter:
+
+    def __init__(self):
+        self.written = None
+
+    def write(self, value):
+        self.written = value
+
+
 def test_radius():
     c = Circle(radius=5.0)
     assert c.radius == 5.0
@@ -67,3 +76,10 @@ def test_equals():
     a = Circle(radius=3, position=V2(2, 5.2))
     b = Circle(radius=3, position=V2(2, 5.2))
     assert a == b
+
+
+def test_write():
+    c = Circle(radius=3, position=V2(2, 5.2))
+    writer = MockWriter()
+    c.write(writer)
+    assert writer.written == bytes(c)

@@ -202,6 +202,10 @@ class V3:
     def dot_product(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
 
+    def write(self, writable):
+        'Writes itself to the file-like object passed in as binary'
+        return writable.write(bytes(self))
+
 
 class V2:
     'Simple 2D vector type that does what you expect'

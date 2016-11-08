@@ -2,6 +2,15 @@ from .shape import Rect
 from .vector import V2
 
 
+class MockWriter:
+
+    def __init__(self):
+        self.written = None
+
+    def write(self, value):
+        self.written = value
+
+
 def test_size():
     r = Rect(V2(0, 0), V2(10, 20))
     assert r.width == 10
@@ -64,3 +73,28 @@ def test_bytes():
 def test_packed_size():
     b = bytes(Rect())
     assert len(b) == len(bytes(V2())) * 2
+
+
+def test_not_equal():
+    a = Rect(position=V2(10, 20), size=V2(30, 40))
+    b = Rect(position=V2(10, 15), size=V2(30, 40))
+    c = Rect(position=V2(10, 20), size=V2(20, 40))
+    assert b != a
+    assert c != a
+
+
+def test_write():
+    a = Rect(position=V2(10, 20), size=V2(30, 40))
+    writer = MockWriter()
+    a.write(writer)
+    assert writer.written == bytes(a)
+
+
+def test_x_position():
+    a = Rect(position=V2(10, 20), size=V2(30, 40))
+    assert a.x1 == 10
+
+
+def test_y_position():
+    a = Rect(position=V2(10, 20), size=V2(30, 40))
+    assert a.y1 == 20

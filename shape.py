@@ -135,6 +135,9 @@ class Rect:
     def scale(self, factor):
         self.size *= factor
 
+    def write(self, writable):
+        return writable.write(bytes(self))
+
 
 class Line:
 

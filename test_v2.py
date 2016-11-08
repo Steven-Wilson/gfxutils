@@ -6,6 +6,15 @@ from random import random
 pi = 3.14159265358979323846264
 
 
+class MockWriter:
+
+    def __init__(self):
+        self.written = None
+
+    def write(self, value):
+        self.written = value
+
+
 def rng(a, b):
     return random() * (b - a) - (b - a) / 2
 
@@ -186,14 +195,7 @@ def test_abs(v1):
 
 
 def test_hash(v1):
-    ' Collisions should be exeedingly rare '
     assert hash(v1) == hash(v1)
-    collisions = 0
-    for _ in range(1000):
-        v2 = random_vector()
-        if hash(v1) == hash(v2):
-            collisions += 1
-    assert collisions < 2
 
 
 def test_bool(v1):
@@ -304,3 +306,47 @@ def test_documentation_normalization():
     # normalize v1 in-place
     v1.normalize()
     assert abs(v1.length - 1) < 0.0001
+
+
+def test_not_equal():
+    a = V2(1, 2)
+    assert a != V2(2, 2)
+    assert a != V2(1, 3)
+    assert a == V2(1, 2)
+
+
+def test_x_vector():
+    a = V2(10, 20)
+    assert a.x_vector == V2(10, 0)
+    assert a == V2(10, 20)
+
+
+def test_y_vector():
+    a = V2(10, 20)
+    assert a.y_vector == V2(0, 20)
+    assert a == V2(10, 20)
+
+
+def test_mirror(v1):
+    a = v1.mirror
+    assert v1.x == -a.x
+    assert v1.y == -a.y
+    assert a == -v1
+
+
+def test_mirror_x(v1):
+    a = v1.mirror_x
+    assert v1.x == a.x
+    assert v1.y == -a.y
+
+
+def test_mirror_y(v1):
+    a = v1.mirror_y
+    assert v1.x == -a.x
+    assert v1.y == a.y
+
+
+def test_write(v1):
+    writer = MockWriter()
+    v1.write(writer)
+    assert writer.written == bytes(v1)

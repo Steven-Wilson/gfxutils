@@ -6,6 +6,15 @@ from random import random
 pi = 3.14159265358979323846264
 
 
+class MockWriter:
+
+    def __init__(self):
+        self.written = None
+
+    def write(self, value):
+        self.written = value
+
+
 def rng(a, b):
     return random() * (b - a) - (b - a) / 2
 
@@ -165,6 +174,14 @@ def test_div(v1):
     assert close_enough(v2.z, v1.z / f)
 
 
+def test_not_equal():
+    a = V3(1, 2, 3)
+    assert a != V3(2, 2, 3)
+    assert a != V3(1, 3, 3)
+    assert a != V3(1, 2, 2)
+    assert a == V3(1, 2, 3)
+
+
 def test_neg(v1):
     v2 = -v1
     assert close_enough(v2.length, v1.length)
@@ -184,14 +201,7 @@ def test_abs(v1):
 
 
 def test_hash(v1):
-    ' Collisions should be exeedingly rare '
     assert hash(v1) == hash(v1)
-    collisions = 0
-    for _ in range(1000):
-        v2 = random_vector()
-        if hash(v1) == hash(v2):
-            collisions += 1
-    assert collisions < 2
 
 
 def test_bool(v1):
@@ -239,3 +249,9 @@ def test_dot(v1):
 def test_packed_size():
     b = bytes(V3())
     assert len(b) == 24
+
+
+def test_write(v1):
+    writer = MockWriter()
+    v1.write(writer)
+    assert writer.written == bytes(v1)
