@@ -195,9 +195,7 @@ def test_pos(v1):
 
 
 def test_abs(v1):
-    v2 = abs(v1)
-    assert close_enough(abs(v1.x), v2.x)
-    assert close_enough(abs(v1.y), v2.y)
+    assert abs(v1) == v1.length
 
 
 def test_hash(v1):

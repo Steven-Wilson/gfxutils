@@ -173,7 +173,7 @@ class V3:
         return self.__class__(self.x, self.y, self.z)
 
     def __abs__(self):
-        return self.__class__(abs(self.x), abs(self.y), abs(self.z))
+        return self.length
 
     def __hash__(self):
         return hash(hash(self.x) + hash(self.y) + hash(self.z))
@@ -325,7 +325,7 @@ class V2:
         return self.__class__(+self.x, +self.y)
 
     def __abs__(self):
-        return self.__class__(abs(self.x), abs(self.y))
+        return self.length
 
     def __eq__(self, other):
         if abs(self.x - other.x) > 0.0001:
