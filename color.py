@@ -29,6 +29,10 @@ class Color:
     def uint32(self):
         return int(self.red * 255) << 24 | int(self.green * 255) << 16 | int(self.blue * 255) << 8 | int(self.alpha * 255)
 
+    @property
+    def rgba8888(self):
+        return int(self.red * 255), int(self.green * 255), int(self.blue * 255), int(self.alpha * 255)
+
     @classmethod
     def from_bytes(cls, packed_bytes):
         components = cls.packer.unpack(packed_bytes)
@@ -147,14 +151,12 @@ class Color:
         return self.__class__(red, green, blue, alpha)
 
     def add(self, other):
-        alpha = other.alpha
         red = min(self.red + other.red * other.alpha, 1.0)
         green = min(self.green + other.green * other.alpha, 1.0)
         blue = min(self.blue + other.blue * other.alpha, 1.0)
         return self.__class__(red, green, blue, self.alpha)
 
     def subtract(self, other):
-        alpha = other.alpha
         red = max(self.red - other.red * other.alpha, 0.0)
         green = max(self.green - other.green * other.alpha, 0.0)
         blue = max(self.blue - other.blue * other.alpha, 0.0)
@@ -173,7 +175,6 @@ class Color:
         return self.__class__(red, green, blue, self.alpha)
 
     def difference(self, other):
-        alpha = abs(self.alpha - other.alpha)
         red = abs(self.red - other.red)
         green = abs(self.green - other.green)
         blue = abs(self.blue - other.blue)
