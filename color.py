@@ -99,6 +99,16 @@ class Color:
         _, _, b = self.hsb
         return b
 
+    @brightness.setter
+    def brightness(self, other):
+        # Bound between 0 and 1
+        if other > 1:
+            other = 1
+        elif other < 0:
+            other = 0
+        h, s, _ = self.hsb
+        self.red, self.green, self.blue = colorsys.hsv_to_rgb(h, s, other)
+
     @property
     def saturation(self):
         '''Returns the Saturation in the HSB color space
@@ -109,6 +119,17 @@ class Color:
         '''
         _, s, _ = self.hsb
         return s
+
+    @saturation.setter
+    def saturation(self, other):
+        # Bound between 0 and 1
+        if other > 1:
+            other = 1
+        elif other < 0:
+            other = 0
+        h, _, b = self.hsb
+        self.red, self.green, self.blue = colorsys.hsv_to_rgb(h, other, b)
+
 
     @property
     def hue(self):
